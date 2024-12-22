@@ -1,8 +1,149 @@
+<!DOCTYPE html>
+<html lang="zh">
 <head>
     <meta charset="utf-8">
-    <title>新标签页</title>
-  </head>
-  <body>
-    <h1>New Function</h1>
-  </body>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>我的家庭相册</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+    <h1>我的家庭相册</h1>
+
+    <div class="filter-buttons">
+        <button class="filter-button active" data-category="all">全部</button>
+        <button class="filter-button" data-category="family">家庭聚会</button>
+        <button class="filter-button" data-category="travel">旅行照片</button>
+        <button class="filter-button" data-category="daily">日常生活</button>
+    </div>
+    
+    <div class="gallery">
+      <div class="gallery-item" data-category="family">
+          <img src="family-album\images\IMG_20180831_102631.JPG" alt="家庭聚会" loading="lazy">
+          <div class="image-caption">温馨家庭晚餐</div>
+      </div>
+      <div class="gallery-item" data-category="travel">
+          <img src="family-album\images\IMG_20180831_102708.JPG" alt="旅行照片" loading="lazy">
+          <div class="image-caption">山间漫步</div>
+      </div>
+      <div class="gallery-item" data-category="daily">
+          <img src="family-album\images\IMG_20180908_145247.jpg" alt="日常生活" loading="lazy">
+          <div class="image-caption">美食烹饪时光</div>
+      </div>
+      <div class="gallery-item" data-category="family">
+          <img src="family-album\images\mmexport1539338866284.jpg" alt="家庭聚会" loading="lazy">
+          <div class="image-caption">欢乐家庭派对</div>
+      </div>
+      <div class="gallery-item" data-category="travel">
+          <img src="family-album\images\mmexport1540228278206.jpg" alt="旅行照片" loading="lazy">
+          <div class="image-caption">海滩度假</div>
+      </div>
+      <div class="gallery-item" data-category="daily">
+          <img src="family-album\images\mmexport1550137218157.jpg" alt="日常生活" loading="lazy">
+          <div class="image-caption">阅读时光</div>
+      </div>
+      <div class="gallery-item" data-category="family">
+          <img src="family-album\images\mmexport1550625479690.jpg" alt="家庭聚会" loading="lazy">
+          <div class="image-caption">生日庆祝</div>
+      </div>
+      <div class="gallery-item" data-category="travel">
+          <img src="family-album\images\mmexport1550625571826.jpg" alt="旅行照片" loading="lazy">
+          <div class="image-caption">城市探索</div>
+      </div>
+      <div class="gallery-item" data-category="daily">
+          <img src="family-album\images\mmexport1551432656639.jpg" alt="日常生活" loading="lazy">
+          <div class="image-caption">花园时光</div>
+      </div>
+      <div class="gallery-item" data-category="family">
+          <img src="family-album\images\wx_camera_1539854864996.jpg" alt="家庭聚会" loading="lazy">
+          <div class="image-caption">节日庆典</div>
+      </div>
+      <div class="gallery-item" data-category="travel">
+          <img src="https://source.unsplash.com/400x700?forest" alt="旅行照片" loading="lazy">
+          <div class="image-caption">森林探险</div>
+      </div>
+      <div class="gallery-item" data-category="daily">
+          <img src="https://source.unsplash.com/400x500?coffee" alt="日常生活" loading="lazy">
+          <div class="image-caption">咖啡时光</div>
+      </div>
+  </div>
+
+    <div id="imageModal" class="modal">
+        <div class="modal-nav modal-prev"><i class="fas fa-chevron-left"></i></div>
+        <div class="modal-nav modal-next"><i class="fas fa-chevron-right"></i></div>
+        <img class="modal-content" id="modalImage">
+        <div id="modalCaption" style="color: white; text-align: center; margin-top: 10px;"></div>
+    </div>
+
+    <script>
+        // 所有的 JavaScript 代码保持不变
+        const filterButtons = document.querySelectorAll('.filter-button');
+        const galleryItems = document.querySelectorAll('.gallery-item');
+        const modal = document.getElementById('imageModal');
+        const modalImg = document.getElementById('modalImage');
+        
+        filterButtons.forEach(button => {
+            button.addEventListener('click', () => {
+                const category = button.dataset.category;
+                
+                filterButtons.forEach(btn => btn.classList.remove('active'));
+                button.classList.add('active');
+
+                galleryItems.forEach(item => {
+                    if (category === 'all' || item.dataset.category === category) {
+                        item.style.display = 'block';
+                    } else {
+                        item.style.display = 'none';
+                    }
+                });
+            });
+        });
+
+        let currentImageIndex = 0;
+        const images = Array.from(document.querySelectorAll('.gallery-item img'));
+        const captions = Array.from(document.querySelectorAll('.image-caption'));
+        
+        function showImage(index) {
+            modalImg.src = images[index].src;
+            document.getElementById('modalCaption').textContent = 
+                captions[index].textContent;
+            currentImageIndex = index;
+        }
+
+        images.forEach((img, index) => {
+            img.onclick = function() {
+                modal.style.display = "block";
+                showImage(index);
+            }
+        });
+
+        document.querySelector('.modal-prev').onclick = function(e) {
+            e.stopPropagation();
+            currentImageIndex = (currentImageIndex - 1 + images.length) % images.length;
+            showImage(currentImageIndex);
+        }
+
+        document.querySelector('.modal-next').onclick = function(e) {
+            e.stopPropagation();
+            currentImageIndex = (currentImageIndex + 1) % images.length;
+            showImage(currentImageIndex);
+        }
+
+        modal.onclick = function() {
+            modal.style.display = "none";
+        }
+
+        document.addEventListener('keydown', function(e) {
+            if (modal.style.display === "block") {
+                if (e.key === "ArrowLeft") {
+                    document.querySelector('.modal-prev').click();
+                } else if (e.key === "ArrowRight") {
+                    document.querySelector('.modal-next').click();
+                } else if (e.key === "Escape") {
+                    modal.style.display = "none";
+                }
+            }
+        });
+    </script>
+</body>
 </html>
